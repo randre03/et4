@@ -13,19 +13,11 @@
      :body (parser/roundtrip user-id)
      :headers {}}))
 
-(defn yo [req]
-  (let [name (get-in req [:route-params :name])]
-    {:status 200
-     :body (str "Yo, "name"!")
-     :headers {}}))
-
 (defroutes app-routes
   (GET "/" [] "<h1>Welcome to MyCX!</h1>")
-  (GET "/widgets" [] (response [{:name "Widget 1"} {:name "Widget 2"}]))
   (GET "/user/:id" [] user-data)
 
   (GET "/request" [] handle-dump)
-
   (route/resources "/")
   (route/not-found "Page Not Found"))
 
