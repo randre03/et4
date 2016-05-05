@@ -14,7 +14,7 @@
 (defn user-data [req]
   (let [user-id (get-in req [:route-params :id])]
     {:status 200
-     :body (parser/roundtrip user-id)
+     :body (parser/single-user-json user-id)
      :headers {"Content-Type" "text/html; charset=UTF-8"}}))
 
 (defroutes routes
@@ -22,7 +22,6 @@
   (GET "/users/:id" [] user-data)
   (GET "/users" [] handler/list-users)
 
-  ;(GET "")
   (ANY "/request" [] handle-dump)
   (route/resources "/")
   (route/not-found "Page Not Found"))
