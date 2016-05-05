@@ -1,28 +1,10 @@
 (ns mycx.handler
-  (:require [compojure.core :refer [GET defroutes]]
-            [compojure.route :as route]
-            [ring.util.response :refer [resource-response response]]
-            [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
-            [ring.middleware.defaults :refer [api-defaults wrap-defaults site-defaults]]
-            [mycx.parser :as parser]
-            [ring.handler.dump :refer [handle-dump]]))
+  (:require [compojure.core :refer [ANY GET POST PUT DELETE defroutes]]
+            [compojure.route :as [route]]
+            [mycx.view :refer [items-page]]
+            [mycx.parser :as [parser]]))
 
-(defn user-data [req]
-  (let [user-id (get-in req [:route-params :id])]
-    {:status 200
-     :body (parser/roundtrip user-id)
-     :headers {}}))
-
-(defroutes app-routes
-  (GET "/" [] "<h1>Welcome to MyCX!</h1>")
-  (GET "/user/:id" [] user-data)
-
-  (GET "/request" [] handle-dump)
-  (route/resources "/")
-  (route/not-found "Page Not Found"))
-
-(def app
-  (-> app-routes
-      (wrap-json-body)
-      (wrap-json-response)
-      (wrap-defaults api-defaults)))
+(defn list-users [req]
+  {:status 200
+   :headers {"Content-Type" "text/html; charset=UTF-8" "Location" "/users"}
+   :body (items-page (print parser/raw-data))})

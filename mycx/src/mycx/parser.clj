@@ -20,6 +20,6 @@
   (let [user-rec-number (get-user-record user)]
     (cheshire/generate-string (csv-map headings user-rec-number) {:pretty true})))
 
-(defn formatter [obj] ;;FIXME NOT WORKING - Should remove the vector that surrounds the JSON
-  (let [{:as all} obj]
-    (print all)))
+;; (defn formatter [obj]
+;;   (let [[{_ :thing :as all}]]
+;;     (all)))
