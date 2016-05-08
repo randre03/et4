@@ -9,12 +9,13 @@
             [ring.middleware.params :refer [wrap-params]]
             [mycx.parser :as parser]
             [mycx.handler :as handler]
-            [ring.handler.dump :refer [handle-dump]]))
+            [ring.handler.dump :refer [handle-dump]]
+            [json-html.core :as jhtml]))
 
 (defn user-data [req]
   (let [user-id (get-in req [:route-params :id])]
     {:status 200
-     :body (parser/single-user-json user-id)
+     :body (jhtml/json->html (parser/single-user-json user-id))
      :headers {"Content-Type" "text/html; charset=UTF-8"}}))
 
 (defroutes routes

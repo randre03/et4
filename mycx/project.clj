@@ -9,7 +9,8 @@
                  [ring/ring-defaults "0.2.0"]
                  [clojure-csv/clojure-csv "2.0.1"]
                  [hiccup "1.0.5"]
-                 [incanter "1.5.7"]]
+                 [incanter "1.5.7"]
+                 [json-html "0.3.9"]]
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler mycx.core/app}
   :profiles
