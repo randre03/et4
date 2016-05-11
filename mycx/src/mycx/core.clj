@@ -26,14 +26,12 @@
      :headers {"Content-Type" "text/html; charset=UTF-8"}}))
 
 (defroutes routes
-  (GET "/" [] "Hey Roger")
+  (GET "/" [] "Hey MyCX - What's Happppppng?")
   (GET "/users/:id" [] user-data)
-  (GET "/users" [] handler/list-users)
-  (GET "/users/age?min_age=min&max_age=max" [] age-data)
+  (GET "/users?age=min_age=min&max_age=max" [] age-data)
 
   (ANY "/request" [] handle-dump)
-  (route/resources "/")
-  (route/not-found "Page Not Found"))
+  (route/not-found "404 Page Not Found"))
 
 (def app
   (-> routes

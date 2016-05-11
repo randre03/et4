@@ -8,7 +8,7 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Retrieve Data
 
-(def ds1 (incant-io/read-dataset "/Users/randre03/Dropbox/Link to dev/media/et4/data/user.csv" :header true :delim \,))
+(defonce ds1 (incant-io/read-dataset "/Users/randre03/Dropbox/Link to dev/media/et4/data/user.csv" :header true :delim \,))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Parse Data
@@ -18,7 +18,9 @@
     (i/$ new-id :all ds1)))
 
 (defn users-by-age [min max]
-  (i/$where {:age {:$gte min :$lte max}} ds1))
+  (let [new_min (Integer. min)
+        new_max (Integer. max)]
+    (i/$where {:age {:$gte new_min :$lte new_max}} ds1)))
 
 ;; (defn lng-lat [lng lat]
 ;;   )
@@ -32,14 +34,14 @@
 (defn single-user-json [user]
   (cheshire/generate-string (zipmap headings (get-user user))))
 
-;; Convert to JSON - Users by Age (relies on transformation in Ring Middleware)
+;; ;; Convert to JSON - Users by Age
 
-;; Calculate number of rows in the Age Matrix
-(defn- total-rows [dataset]
-  (first (i/dim dataset)))
+;; ;; Calculate number of rows in the Age Matrix
+;; (defn- total-rows [dataset]
+;;   (first (i/dim dataset)))
 
-(defn json-by-row [dataset]
-  (i/$ (total-rows dataset) :all dataset))
+;; (defn json-by-row [dataset]
+;;   (i/$ (total-rows dataset) :all dataset))
 
 
 

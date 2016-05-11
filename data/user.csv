@@ -1,4 +1,4 @@
-id, fname, lname, username, lat, long, gender, age, comments, likes, dislikes, retweets
+id,fname,lname,username,lat,long,gender,age,comments,likes,dislikes,retweets
 1, John, Doe, jdoe,38.900918,-77.035857, male,45,23,10,300,35
 2,Thea,Cephus,tcephus,38.07989895,-77.23436755,male,30,675,360,932,859
 3,Jerrold,Mizzell,jmizzell,37.88902978,-76.86954625,male,35,368,277,378,794
