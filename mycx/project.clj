@@ -8,6 +8,7 @@
                  [ring/ring-json "0.4.0"]
                  [ring/ring-defaults "0.2.0"]
                  [clojure-csv/clojure-csv "2.0.1"]
+                 [haversine "0.1.1"]
                  [hiccup "1.0.5"]
                  [incanter "1.5.7"]
                  [json-html "0.3.9"]]
