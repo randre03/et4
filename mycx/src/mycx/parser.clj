@@ -31,7 +31,7 @@
         new_max (Integer. max)]
     (i/$where {:age {:$gte new_min :$lte new_max}} ds1)))
 
-(defn users-by-age
+(defn- users-by-age
   "Reduces the data-by-age dataset to just id, fname, lname and age, ordered
   by age - lowest to highest."
   [min max]
@@ -49,18 +49,18 @@
 
 (def headings ["id" "fname" "lname" "username" "lat" "long" "gender" "age" "comments" "likes" "dislikes" "retweets"])
 
-(defn single-user-json [user]
+(defn single-user-json
+  "Returns all available data about user formatted in json."
+  [user]
   (cheshire/generate-string (zipmap headings (get-user user))))
 
 ;; Convert to JSON - Users by Age
 
-(defn json-age-data [dataset]
-  (if (seq dataset)
-    (for [data dataset]
-      #{"id:"     (i/$ :id data)
-        "fname:"  (i/$ :fname data)
-        "lname:"  (i/$ :lname data)
-        "age:"     (i/$ :age data)})))
+(defn json-age-data [min max]
+  (let [dataset (users-by-age min max)
+        reformatted (seq dataset)
+        revised-data (drop 1 reformatted)]
+    revised-data))
 
 
 
