@@ -23,12 +23,18 @@
   (let [min (get-in req [:route-params :min_age])
         max (get-in req [:route-params :max-age])]
     {:status 200
-     :body (parser/users-by-age min max)
+     :body (jhtml/json->html((parser/users-by-age)))
      :headers {"Content-Type" "text/html; charset=UTF-8"}}))
+
+(defn all-users-json [req]
+  {:status 200
+   :body (parser/everyone-by-age)
+   :headers {"Content-Type" "text/html; charset=UTF-8"}})
 
 (defroutes routes
   (GET "/" [] "Hey MyCX - What's Happppppng?")
   (GET "/users/:id" [] user-data)
+  (GET "/users" [] all-users-json)
   (GET "/users?age=min_age=min&max_age=max" [] age-data)
   (GET "/users/users/all" [] handler/list-users)
 
