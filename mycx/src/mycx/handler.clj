@@ -1,8 +1,7 @@
 (ns mycx.handler
-  (:require [compojure.core :refer [ANY GET POST PUT DELETE defroutes]]
-            [compojure.route :as route]
-            [mycx.view :refer [items-page]]
-            [mycx.parser :as parser]))
+  (:require [mycx
+             [parser :as parser]
+             [view :refer [items-page]]]))
 
 (defn list-users [req]
   ({:status 200

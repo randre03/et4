@@ -1,9 +1,8 @@
 (ns mycx.parser
-  (:require [incanter.core :as i]
-            [incanter.io :as incant-io]
-            [cheshire.core :as cheshire]
-            [cheshire.core :as cheshire]
-            [clojure-csv.core :as csv-core]))
+  (:require [cheshire.core :as cheshire]
+            [incanter
+             [core :as i]
+             [io :as incant-io]]))
 
 ;;;;;;;;;;;;;;;;;;;;
 ;; Retrieve Data
@@ -13,14 +12,26 @@
 ;;;;;;;;;;;;;;;;;;;;
 ;; Parse Data
 
-(defn get-user [id]
+(defn get-user
+  "Returns all data associated with the user with id number id."
+  [id]
   (let [new-id (Integer. id)]
     (i/$ new-id :all ds1)))
 
-(defn users-by-age [min max]
+(defn data-by-age
+  "Returns a subset of the entire dataset with all data-points for those users between ages min and max (inclusive).
+  "
+  [min max]
   (let [new_min (Integer. min)
         new_max (Integer. max)]
     (i/$where {:age {:$gte new_min :$lte new_max}} ds1)))
+
+(defn users-by-age
+  "Reduces the data-by-age dataset to just id, fname, lname and age, ordered by age - lowest to highest."
+  [min max]
+  (let [dataset (data-by-age min max)
+        sub-set (i/$ [:id :fname :lname :age] dataset)]
+    (i/$order :age :asc sub-set)))
 
 ;; (defn lng-lat [lng lat]
 ;;   )
