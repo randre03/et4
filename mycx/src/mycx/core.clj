@@ -35,7 +35,7 @@
   (let [lat (get-in req [:route-params :lat])
         lon (get-in req [:route-params :lon])]
     {:status 200
-     :body (parser/user-radius)
+     :body (parser/user-radius-longitude) ;;FIXME
      :headers {"Content-Type" "text/html; charset=UTF-8"}}))
 
 (defroutes routes

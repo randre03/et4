@@ -16,7 +16,8 @@
 (defn get-user
   "Returns all data associated with the user with id number id."
   [id]
-  (let [new-id (Integer. id)]
+  (let [mid-id (Integer. id)
+        new-id (dec mid-id)]
     (i/$ new-id :all ds1)))
 
 (defn everyone-by-age
@@ -44,7 +45,7 @@
 (defn- max-radius
   "Calculates the range of latitude and longitude for distance
   (assumed to be 5.0 miles [8.06 km]) around a given point.
-  Returns a map of 4 values:
+  Returns a map with 4 kv pairs:
   :maxlatitude, :minlatitude, :maxlongitude, minlongitude"
   [lat lon]
   (haversine/neighborhood {:latitude lat :longitude lon :distance-from 8.06}))
@@ -70,6 +71,7 @@
         maxlat (:maxlatitude location-map)
         minlat (:minlatitude location-map)]
     (i/$where {:lat {:$lte maxlat :$gte minlat}} user-location-data)))
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Convert to JSON
 
