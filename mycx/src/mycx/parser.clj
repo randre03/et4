@@ -44,11 +44,11 @@
 
 (defn- max-radius
   "Calculates the range of latitude and longitude for distance
-  (assumed to be 5.0 miles [8.06 km]) around a given point.
+  (assumed to be 5.0 miles [8.04672 km per Google]) around a given point.
   Returns a map with 4 kv pairs:
   :maxlatitude, :minlatitude, :maxlongitude, minlongitude"
   [lat lon]
-  (haversine/neighborhood {:latitude lat :longitude lon :distance-from 8.06}))
+  (haversine/neighborhood {:latitude lat :longitude lon :distance-from 8.04672}))
 
 (def user-location-data
   "Returns the entire dataset, limited to :id, :fname, :lname, :lat and :long."
@@ -56,7 +56,7 @@
         dataset (i/$order :long :asc raw-data)]
     dataset))
 
-(defn user-radius-longitude
+(defn- user-radius-longitude
   "Returns a matrix of all users within the radius based upon longitude."
   [arg-lat arg-lon]
   (let [location-map (max-radius arg-lat arg-lon)
@@ -64,7 +64,7 @@
         minlon (:minlongitude location-map)]
     (i/$where {:long {:$lte maxlon :$gte minlon}} user-location-data)))
 
-(defn user-radius-latitude
+(defn- user-radius-latitude
   "Returns a matrix of all users within the radius based upon latitude."
   [arg-lat arg-lon]
   (let [location-map (max-radius arg-lat arg-lon)
@@ -72,48 +72,48 @@
         minlat (:minlatitude location-map)]
     (i/$where {:lat {:$lte maxlat :$gte minlat}} user-location-data)))
 
+(defn user-radius
+  "Combines the matrices of people that live close-by according to Latitude and
+  those that live close-by according to longitude into a seq."
+  [arg-lat arg-lon]
+  (let [lat-matrix (user-radius-latitude arg-lat arg-lon)
+        lon-matrix (user-radius-longitude arg-lat arg-lon)
+        latvect (i/to-vect lat-matrix)
+        lonvect (i/to-vect lon-matrix)
+        new-vect (conj latvect lonvect)
+        flat-seq (flatten new-vect)]
+    flat-seq))
+
+(defn frequency-map
+  "Takes the seq from user-radius, changes it to a map where values indicate the
+  number of times that data-point shows up (either 1 time, on only one list or 2
+  to show up on both lists)."
+  [coll]
+  (let [gp (group-by identity coll)]
+    (zipmap (keys gp) (map #(count (second %)) gp))))
+
+(defn neighbors
+  "Takes the data from frequency-map function and reduces it down to just those
+  individuals who have shown up on both the latitude and longitude lists (hence v=2 below) and
+  therefore arriving at the people that are within the indicated radius of the given
+  coordinates."
+  [coll]
+  (select-keys coll (for [[k v] coll :when (= v 2)] k)))
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Convert to JSON
 
 (def headings ["id" "fname" "lname" "username" "lat" "long" "gender" "age" "comments" "likes" "dislikes" "retweets"])
 
-  (defn single-user-json
-    "Returns all available data about user formatted in json."
-    [user]
-    (cheshire/generate-string (zipmap headings (get-user user))))
+(defn single-user-json
+  "Returns all available data about user formatted in json."
+  [user]
+  (cheshire/generate-string (zipmap headings (get-user user))))
 
-  (defn json-age-data
-    "Returns JSON-formatted group of user-data (:fname, :lname, :age, :id), by age in ascending order."
-    [min max]
-    (let [dataset (users-by-age min max)
-          reformatted (seq dataset)
-          revised-data (drop 1 reformatted)]
-      revised-data))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; Old Parsing Code
-
-  ;; (def parsed-data (csv-core/parse-csv ds1))
-  ;; (def parsed-data-vec (into [] parsed-data))
-
-  ;; (defn get-user-record [user-id]
-  ;;   (let [id (Integer. user-id)]
-  ;;     (nth parsed-data-vec id)))
-
-  ;; (defn csv-map [headings & user-record]
-  ;;   (map #(zipmap (map keyword headings) %1) user-record))
-
-  ;; ;; Generate JSON
-  ;; (defn roundtrip [user]
-  ;;   (let [user-rec-number (get-user-record user)]
-  ;;     (cheshire/generate-string (csv-map headings user-rec-number) {:pretty true})))
-
-  ;; (defn- total-rows
-  ;;   "Calculates the number of rows in the Age matrix."
-  ;;   [dataset]
-  ;;   (first (i/dim dataset)))
-
-  ;; (defn- json-by-row [dataset]
-  ;;   (i/$ (dec (total-rows dataset)) :all dataset))
+(defn json-age-data
+  "Returns JSON-formatted group of user-data (:fname, :lname, :age, :id), by age in ascending order."
+  [min max]
+  (let [dataset (users-by-age min max)
+        reformatted (seq dataset)
+        revised-data (drop 1 reformatted)]
+    revised-data))
