@@ -42,6 +42,7 @@
   (GET "/" [] "Hey MyCX - What's Happppppng?")
   (GET "/users" [] all-users-json)
   (GET "/users/:id" [] single-user-data)
+  ;;(GET "/users/?min_age=min&max_age=max" [] age-data)
   (GET "/users/age?min_age=min&max_age=max" [] age-data)
   (GET "/users?loc=lat=lat&lon=lon" [] within-radius)
 

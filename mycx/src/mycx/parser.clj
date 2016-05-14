@@ -82,9 +82,11 @@
         lonvect (i/to-vect lon-matrix)
         new-vect (conj latvect lonvect)
         flat-seq (flatten new-vect)]
-    flat-seq))
+    (-> flat-seq
+        frequency-map
+        neighbors)))
 
-(defn frequency-map
+(defn- frequency-map
   "Takes the seq from user-radius, changes it to a map where values indicate the
   number of times that data-point shows up (either 1 time, on only one list or 2
   to show up on both lists)."
@@ -92,7 +94,7 @@
   (let [gp (group-by identity coll)]
     (zipmap (keys gp) (map #(count (second %)) gp))))
 
-(defn neighbors
+(defn- neighbors
   "Takes the data from frequency-map function and reduces it down to just those
   individuals who have shown up on both the latitude and longitude lists (hence v=2 below) and
   therefore arriving at the people that are within the indicated radius of the given
