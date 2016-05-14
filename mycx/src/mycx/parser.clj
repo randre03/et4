@@ -5,6 +5,8 @@
              [core :as i]
              [io :as incant-io]]))
 
+(declare frequency-map neighbors)
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; Retrieve Data
 
@@ -23,7 +25,7 @@
 (defn everyone-by-age
   "Returns the entire dataset with all data-points sorted by id from min and max."
   []
-  (drop 1 (i/$order :id :asc ds1)))
+  (i/to-vect (i/$order :id :asc ds1)))
 
 (defn- data-by-age
   "Returns a subset of the entire dataset with all data-points for those users
@@ -108,9 +110,14 @@
 (def headings ["id" "fname" "lname" "username" "lat" "long" "gender" "age" "comments" "likes" "dislikes" "retweets"])
 
 (defn single-user-json
-  "Returns all available data about user formatted in json."
+  "Returns all available data about a single user formatted in json."
   [user]
   (cheshire/generate-string (zipmap headings (get-user user))))
+
+(defn all-users-json
+  "FIXME: DOCTSTRING"
+  []
+  (cheshire/generate-string (zipmap headings (everyone-by-age)))) ;;FIXME
 
 (defn json-age-data
   "Returns JSON-formatted group of user-data (:fname, :lname, :age, :id), by age in ascending order."

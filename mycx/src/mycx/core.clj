@@ -35,14 +35,14 @@
   (let [lat (get-in req [:route-params :lat])
         lon (get-in req [:route-params :lon])]
     {:status 200
-     :body (parser/user-radius lat lon)
+     :body (jhtml/json->html (parser/user-radius lat lon))
      :headers {"Content-Type" "text/html; charset=UTF-8"}}))
 
 (defroutes routes
   (GET "/" [] "Hey MyCX - What's Happppppng?")
   (GET "/users" [] all-users-json)
   (GET "/users/:id" [] single-user-data)
-  ;;(GET "/users/?min_age=min&max_age=max" [] age-data)
+  (GET "/users/?min_age=min&max_age=max" [] age-data)
   (GET "/users/age?min_age=min&max_age=max" [] age-data)
   (GET "/users?loc=lat=lat&lon=lon" [] within-radius)
 
